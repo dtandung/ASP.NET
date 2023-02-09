@@ -1,0 +1,84 @@
+﻿
+@{
+	ViewBag.Title = "Nhà Cung Cấp";
+}
+
+<div class="box box-primary">
+	<!-- form start -->
+	<div class="box-body">
+		<form>
+			<div class="input-group">
+				<input type="text" class="form-control" placeholder="Search">
+				<div class="input-group-btn">
+					<button class="btn btn-info" type="submit" style="margin-right:4px">
+						<i class="glyphicon glyphicon-search"></i>Tìm Kiếm
+					</button>
+					<a href="~/Supplier/Create" class="btn btn-success btn-flat">
+						<i class="glyphicon glyphicon-plus"></i>Bổ Sung
+					</a>
+				</div>
+			</div>
+		</form>
+		<p> Có <b>100</b> bản ghi trong tổng số <b>10</b> trang</p>
+		<table class=" table table-bordered table-hover table-striped">
+			<thead>
+				<tr class="bg-success">
+					<th>
+						Tên Nhà Cung Cấp
+					</th>
+					<th>
+						Tên Giao Dịch
+					</th>
+					<th>
+						Địa Chỉ
+					</th>
+					<th>
+						Số Điện Thoại
+					</th>
+					<th>
+						Quốc Gia
+					</th>
+					<th>
+						Thành Phố
+					</th>
+					<th>
+						Mã Bưu Chính
+					</th>
+					<th>
+
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				@for (int i = 1; i <= 20; i++)
+				{
+					<tr>
+						<td>Công ty TNHH MTV Tấn Dũng</td>
+						<td>Dũng DTD</td>
+						<td>173 Phan Đình Phùng, Phú Nhuận, TP.Huế</td>
+						<td>0946562246</td>
+						<td>Việt Nam</td>
+						<td>Thừa Thiên Huế</td>
+						<td>111</td>
+						<td>
+							<a href="~/Supplier/Edit" class="btn-sm btn-warning" title="Sửa"><i class="glyphicon glyphicon-edit"></i></a>
+							<a href="~/Supplier/Delete" class="btn-sm btn-danger" title="Xoá"><i class="glyphicon glyphicon-trash"></i></a>
+						</td>
+					</tr>
+				}
+
+			</tbody>
+		</table>
+		<div class="text-center">
+			<ul class="pagination">
+				<li><a href="#">1</a></li>
+				<li><a href="#">2</a></li>
+				<li><a href="#">3</a></li>
+				<li class="active"><a href="#">4</a></li>
+				<li><a href="#">5</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+
