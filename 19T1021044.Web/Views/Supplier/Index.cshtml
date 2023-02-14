@@ -1,15 +1,16 @@
-﻿@model IEnumerable<_19T1021044.DomainModels.Supplier>
+﻿@model _19T1021044.Web.Models.PaginationSearchInput
 
 @{
-    ViewBag.Title = "Nhà Cung Cấp";
+    ViewBag.Title = "Quản Lý Nhà Cung Cấp";
 }
 
 <div class="box box-primary">
     <!-- form start -->
     <div class="box-body">
-        <form >
+        <form id="formSearch" action="~/Supplier/Search" >
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search" value="@ViewBag.SearchValue" autofocus>
+                <input type="hidden" name="PageSize" value="@Model.PageSize" />
+                <input type="text" name="searchValue" class="form-control" placeholder="Search" value="@Model.SearchValue" autofocus>
                 <div class="input-group-btn">
                     <button class="btn btn-info" type="submit" style="margin-right:4px">
                         <i class="glyphicon glyphicon-search"></i>Tìm Kiếm
@@ -20,72 +21,38 @@
                 </div>
             </div>
         </form>
-        <p> Có <b>@ViewBag.RowCount</b> bản ghi trong tổng số <b>@ViewBag.PageCount</b> trang</p>
-        <table class=" table table-bordered table-hover table-striped">
-            <thead>
-                <tr class="bg-success">
-                    <th>
-                        Tên Nhà Cung Cấp
-                    </th>
-                    <th>
-                        Tên Giao Dịch
-                    </th>
-                    <th>
-                        Địa Chỉ
-                    </th>
-                    <th>
-                        Số Điện Thoại
-                    </th>
-                    <th>
-                        Quốc Gia
-                    </th>
-                    <th>
-                        Thành Phố
-                    </th>
-                    <th>
-                        Mã Bưu Chính
-                    </th>
-                    <th>
-
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.SupplierName</td>
-                        <td>@item.ContactName</td>
-                        <td>@item.Address</td>
-                        <td>@item.Phone</td>
-                        <td>@item.Country</td>
-                        <td>@item.City</td>
-                        <td>@item.PostalCode</td>
-                        <td style="width:90px">
-                            <a href="~/Supplier/Edit/@item.SupplierID" class="btn-sm btn-warning" title="Sửa"><i class="glyphicon glyphicon-edit"></i></a>
-                            <a href="~/Supplier/Delete/@item.SupplierID" class="btn-sm btn-danger" title="Xoá"><i class="glyphicon glyphicon-trash"></i></a>
-                        </td>
-                    </tr>
-                }
-
-            </tbody>
-        </table>
-        <div class="text-center">
-            <ul class="pagination">
-                @for (int i = 1; i <= ViewBag.PageCount; i++)
-                {
-                    if (i == ViewBag.Page)
-                    {
-                        <li class="active"><a href="#">@i</a></li>
-                    }
-                    else
-                    {
-                        <li><a href="~/Supplier?page=@i&searchvalue=@ViewBag.SearchValue">@i</a></li>
-                    }
-                }
-            </ul>
-        </div>
+        <div id="searchResult"></div>
     </div>
 </div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#formSearch").submit(function (e) {
+                e.preventDefault();//ngăn chặn hành động mặc định của form
+                doSearch(1);
+                return;
+            });
+            doSearch(@Model.Page);
+        })
+        function doSearch(page) {
+            var url = $("#formSearch").prop("action");
+            var postData = $("#formSearch").serializeArray();
+            postData.push({ "name": "page", "value": page });
 
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: postData,
+                error: function () {
+                    alert("Your request is not valid!");
+                },
+                success: function (data) {
+                    $("#searchResult").html(data);
+                }
+            });
+
+            return;
+        }
+    </script>
+}
 

@@ -5,11 +5,14 @@ using System.Web;
 using System.Web.Mvc;
 using _19T1021044.DomainModels;
 using _19T1021044.BusinessLayers;
+using _19T1021044.Web.Models;
 
 namespace _19T1021044.Web.Controllers
 {
     public class CategoryController : Controller
     {
+        private const int PAGE_SIZE = 5;//1 giá trị dùng từ 2 lần trở lên nên dùng hằng
+        private const string CATEGORY_SEARCH = "SearchCategoryCondition";
         /// <summary>
         /// 
         /// </summary>
@@ -17,21 +20,43 @@ namespace _19T1021044.Web.Controllers
         /// <param name="pageSize"></param>
         /// <param name="searchValue"></param>
         /// <returns></returns>
-        public ActionResult Index(int page = 1, int pageSize = 20, string searchValue = "")
+        public ActionResult Index()
+        {
+            PaginationSearchInput condition = Session[CATEGORY_SEARCH] as PaginationSearchInput;
+
+            if (condition == null)
+            {
+                condition = new PaginationSearchInput()
+                {
+                    Page = 1,
+                    PageSize = PAGE_SIZE,
+                    SearchValue = ""
+                };
+            }
+
+
+            return View(condition);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        public ActionResult Search(PaginationSearchInput condition)
         {
             int rowCount = 0;
-            var model = CommonDataService.ListOfCategorys(page, pageSize, searchValue, out rowCount);
+            var data = CommonDataService.ListOfCategorys(condition.Page, condition.PageSize, condition.SearchValue, out rowCount);
+            var result = new CategorySearchOutput()
+            {
+                Page = condition.Page,
+                PageSize = condition.PageSize,
+                SearchValue = condition.SearchValue,
+                RowCount = rowCount,
+                Data = data
+            };
 
-            int pageCount = rowCount / pageSize;
-            if (rowCount % pageSize > 0)
-                pageCount += 1;
-            ViewBag.Page = page;
-            ViewBag.PageCount = pageCount;
-            ViewBag.RowCount = rowCount;
-            ViewBag.PageSize = pageSize;
-            ViewBag.SearchValue = searchValue;
-
-            return View(model);
+            Session[CATEGORY_SEARCH] = condition;
+            return View(result);
         }
         /// <summary>
         /// Giao diện để bổ sung một loại hàng
