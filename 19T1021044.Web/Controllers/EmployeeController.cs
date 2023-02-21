@@ -72,11 +72,14 @@ namespace _19T1021044.Web.Controllers
         /// Giao diện cập nhật thông tin nhân viên
         /// </summary>
         /// <returns></returns>
-        public ActionResult Edit(string id)
+        public ActionResult Edit(int id = 0)
         {
-            int employeeId = Convert.ToInt32(id);
-
-            var data = CommonDataService.GetEmployee(employeeId);
+            //int employeeId = Convert.ToInt32(id);
+            if (id == 0)
+                return RedirectToAction("Index");
+            var data = CommonDataService.GetEmployee(id);
+            if (data == null)
+                return RedirectToAction("Index");
             ViewBag.Title = "Cập Nhật Thông Tin Nhân Viên";
             return View(data);
         }
@@ -86,35 +89,64 @@ namespace _19T1021044.Web.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Save(Employee data)
         {
 
-            if (data.EmployeeID == 0)
+            try
             {
-                CommonDataService.AddEmployee(data);
-            }
-            else
-            {
-                CommonDataService.UpdateEmployee(data);
-            }
+                if (string.IsNullOrWhiteSpace(data.LastName))
+                    ModelState.AddModelError("LastName", "Họ Đệm Không Được Để Trống");
+                if (string.IsNullOrWhiteSpace(data.FirstName))
+                    ModelState.AddModelError("FirstName", "Tên Không Được Để Trống");
+                if (string.IsNullOrWhiteSpace(data.Email))
+                    ModelState.AddModelError("Email", "Email Không Được Để Trống");
+                if (string.IsNullOrWhiteSpace(data.Notes))
+                    data.Notes = "";
+                if (string.IsNullOrWhiteSpace(data.Photo))
+                    data.Photo = "";
 
-            return RedirectToAction("Index");
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.Title = data.EmployeeID == 0 ? "Bổ sung nhân viên" : "Cập nhật nhân viên";
+                    return View("Edit", data);
+                }
+
+                if (data.EmployeeID == 0)
+                {
+                    CommonDataService.AddEmployee(data);
+                }
+                else
+                {
+                    CommonDataService.UpdateEmployee(data);
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return Content("Có lỗi xảy ra. Vui lòng thử lại!");
+            }
         }
         /// <summary>
         /// Giao diện xoá nhân viên
         /// </summary>
         /// <returns></returns>
-        public ActionResult Delete(string id)
+        public ActionResult Delete(int id = 0)
         {
-            int employeeId = Convert.ToInt32(id);
+            //int employeeId = Convert.ToInt32(id);
+            if (id == 0)
+                return RedirectToAction("Index");
             if (Request.HttpMethod == "GET")
             {
-                var data = CommonDataService.GetEmployee(employeeId);
+                var data = CommonDataService.GetEmployee(id);
+                if (data == null)
+                    return RedirectToAction("Index");
                 return View(data);
             }
             else
             {
-                CommonDataService.DeleteEmployee(employeeId);
+                CommonDataService.DeleteEmployee(id);
                 return RedirectToAction("Index");
             }
         }

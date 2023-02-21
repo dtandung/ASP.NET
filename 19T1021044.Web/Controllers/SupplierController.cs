@@ -20,7 +20,7 @@ namespace _19T1021044.Web.Controllers
         {
             PaginationSearchInput condition = Session[SUPPLIER_SEARCH] as PaginationSearchInput;
 
-            if(condition == null)
+            if (condition == null)
             {
                 condition = new PaginationSearchInput()
                 {
@@ -30,7 +30,7 @@ namespace _19T1021044.Web.Controllers
                 };
             }
 
-            
+
             return View(condition);
         }
         /// <summary>
@@ -71,12 +71,15 @@ namespace _19T1021044.Web.Controllers
         /// Giao Diện để chỉnh sửa thông tin nhà cung cấp 
         /// </summary>
         /// <returns></returns>
-        public ActionResult Edit(string id)
+        public ActionResult Edit(int id = 0) //nếu kh cho phép null thì đầu vào sẽ lỗi ngay lời gọi hàm kh vào được code bên trong
         {
-            int supplierId = Convert.ToInt32(id);
-
-            var data = CommonDataService.GetSupplier(supplierId);
-
+            //int supplierId = Convert.ToInt32(id);
+            if (id == 0)
+                return RedirectToAction("Index");
+            var data = CommonDataService.GetSupplier(id);
+            if (data == null)
+                return RedirectToAction("Index");
+            //return Json(data, JsonRequestBehavior.AllowGet);
             ViewBag.Title = "Cập nhật nhà cung cấp";
             return View(data);
         }
@@ -86,33 +89,66 @@ namespace _19T1021044.Web.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
+        [ValidateAntiForgeryToken]//tránh những sự tấn công từ bên ngoài
         public ActionResult Save(Supplier data)
         {
-            if(data.SupplierID == 0)
+            try
             {
-                CommonDataService.AddSupplier(data);
+                //kiểm soát đầu vào
+                if (string.IsNullOrWhiteSpace(data.SupplierName))
+                    ModelState.AddModelError("SupplierName", "Tên Không Được Để Trống");
+                if (string.IsNullOrWhiteSpace(data.ContactName))
+                    ModelState.AddModelError("ContactName", "Tên Giao Dịch Không Được Để Trống");
+                if (string.IsNullOrWhiteSpace(data.Country))
+                    ModelState.AddModelError("Country", "Vui Lòng Chọn Quốc Gia");
+                if (string.IsNullOrWhiteSpace(data.Address))
+                    data.Address = "";
+                if (string.IsNullOrWhiteSpace(data.City))
+                    data.City = "";
+                if (string.IsNullOrWhiteSpace(data.PostalCode))
+                    data.PostalCode = "";
+
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.Title = data.SupplierID == 0 ? "Bổ sung nhà cung cấp" : "Cập nhật nhà cung cấp";
+                    return View("Edit", data);
+                }
+
+                if (data.SupplierID == 0)
+                {
+                    CommonDataService.AddSupplier(data);
+                }
+                else
+                {
+                    CommonDataService.UpdateSupplier(data);
+                }
+                return RedirectToAction("Index");
             }
-            else
+            catch 
             {
-                CommonDataService.UpdateSupplier(data);
+                return Content("Có lỗi xảy ra. Vui lòng thử lại!");
             }
-            return RedirectToAction("Index");
+
         }
         /// <summary>
         /// xoá nhà cung cấp
         /// </summary>
         /// <returns></returns>
-        public ActionResult Delete(string id)
+        public ActionResult Delete(int id = 0)
         {
-            int supplierID = Convert.ToInt32(id);
-            if(Request.HttpMethod == "GET")
+            // int supplierID = Convert.ToInt32(id);
+            if (id == 0)
+                return RedirectToAction("Index");
+            if (Request.HttpMethod == "GET")
             {
-                var data = CommonDataService.GetSupplier(supplierID);
+                var data = CommonDataService.GetSupplier(id);
+                if (data == null)
+                    return RedirectToAction("Index");
                 return View(data);
             }
             else
             {
-                CommonDataService.DeleteSupplier(supplierID);
+                CommonDataService.DeleteSupplier(id);
                 return RedirectToAction("Index");
             }
         }

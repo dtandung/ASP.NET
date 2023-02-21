@@ -11,7 +11,7 @@ namespace _19T1021044.Web.Controllers
 {
     public class CustomerController : Controller
     {
-        private const int PAGE_SIZE = 5;//1 giá trị dùng từ 2 lần trở lên nên dùng hằng
+        private const int PAGE_SIZE = 10;//1 giá trị dùng từ 2 lần trở lên nên dùng hằng
         private const string CUSTOMER_SEARCH = "SearchCustomerCondition";
         /// <summary>
         /// 
@@ -72,11 +72,14 @@ namespace _19T1021044.Web.Controllers
         /// Giao diện cập nhật thông tin khách hàng
         /// </summary>
         /// <returns></returns>
-        public ActionResult Edit(string id)
+        public ActionResult Edit(int id = 0)
 		{
-            int customerId = Convert.ToInt32(id);
-
-            var data = CommonDataService.GetCustomer(customerId);
+            //int customerId = Convert.ToInt32(id);
+            if (id == 0)
+                return RedirectToAction("Index");
+            var data = CommonDataService.GetCustomer(id);
+            if (data == null)
+                return RedirectToAction("Index");
             ViewBag.Title = "Cập Nhật Thông Tin Khách Hàng";
             return View(data);
 		}
@@ -86,33 +89,66 @@ namespace _19T1021044.Web.Controllers
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Save(Customer data)
         {
-            if (data.CustomerID == 0)
+            try
             {
-                CommonDataService.AddCustomer(data);
+
+                if (string.IsNullOrWhiteSpace(data.CustomerName))
+                    ModelState.AddModelError("CustomerName", "Tên Không Được Để Trống");
+                if (string.IsNullOrWhiteSpace(data.ContactName))
+                    ModelState.AddModelError("ContactName", "Tên Giao Dịch Không Được Để Trống");
+                if (string.IsNullOrWhiteSpace(data.Country))
+                    ModelState.AddModelError("Country", "Vui Lòng Chọn Quốc Gia");
+                if (string.IsNullOrWhiteSpace(data.Address))
+                    data.Address = "";
+                if (string.IsNullOrWhiteSpace(data.City))
+                    data.City = "";
+                if (string.IsNullOrWhiteSpace(data.PostalCode))
+                    data.PostalCode = "";
+
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.Title = data.CustomerID == 0 ? "Bổ sung nhà khách hàng" : "Cập nhật khách hàng";
+                    return View("Edit", data);
+                }
+
+                if (data.CustomerID == 0)
+                {
+                    CommonDataService.AddCustomer(data);
+                }
+                else
+                {
+                    CommonDataService.UpdateCustomer(data);
+                }
+                return RedirectToAction("Index");
             }
-            else
+            catch
             {
-                CommonDataService.UpdateCustomer(data);
+                return Content("Có lỗi xảy ra. Vui lòng thử lại!");
             }
-            return RedirectToAction("Index");
+            
         }
         /// <summary>
         /// Giao diện xoá 1 khách hàng
         /// </summary>
         /// <returns></returns>
-        public ActionResult Delete(string id)
+        public ActionResult Delete(int id = 0)
 		{
-            int customerID = Convert.ToInt32(id);
+            //int customerID = Convert.ToInt32(id);
+            if (id == 0)
+                return RedirectToAction("Index");
             if (Request.HttpMethod == "GET")
             {
-                var data = CommonDataService.GetCustomer(customerID);
+                var data = CommonDataService.GetCustomer(id);
+                if (data == null)
+                    return RedirectToAction("Index");
                 return View(data);
             }
             else
             {
-                CommonDataService.DeleteCustomer(customerID);
+                CommonDataService.DeleteCustomer(id);
                 return RedirectToAction("Index");
             }
         }
