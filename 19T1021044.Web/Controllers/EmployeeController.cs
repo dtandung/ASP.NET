@@ -90,11 +90,28 @@ namespace _19T1021044.Web.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Save(Employee data)
+        public ActionResult Save(Employee data, string birthday, HttpPostedFileBase UploadPhoto)//Employee data
         {
 
-            try
-            {
+            //try
+            //{
+                DateTime? d = Converter.DMYStringToDateTime(birthday);
+                if (d == null)
+                    ModelState.AddModelError("BirthDate", $"Ngày Sinh {birthday} Chưa Đúng Định Dạng");
+                else
+                {
+                    DateTime startday = new DateTime(1753, 1, 1);
+                    DateTime enday = new DateTime(9999, 12, 31);
+                    if (d > startday && d < enday)
+                        data.BirthDate = d.Value;
+                    else
+                    {
+                        ModelState.AddModelError("BirthDate", "Ngày Sinh Chưa Đúng Định Dạng");
+                    }
+                }
+                    
+
+
                 if (string.IsNullOrWhiteSpace(data.LastName))
                     ModelState.AddModelError("LastName", "Họ Đệm Không Được Để Trống");
                 if (string.IsNullOrWhiteSpace(data.FirstName))
@@ -112,6 +129,16 @@ namespace _19T1021044.Web.Controllers
                     return View("Edit", data);
                 }
 
+
+                if(UploadPhoto != null)
+                {
+                    string path = Server.MapPath("~/Photos"); //mappath: lấy đường dẫn vật lí
+                    string fileName = $"{DateTime.Now.Ticks}_{UploadPhoto.FileName}";
+                    string filePath = System.IO.Path.Combine(path, fileName);//cộng chuỗi
+                    UploadPhoto.SaveAs(filePath);
+                    data.Photo = fileName;
+                }
+
                 if (data.EmployeeID == 0)
                 {
                     CommonDataService.AddEmployee(data);
@@ -122,11 +149,11 @@ namespace _19T1021044.Web.Controllers
                 }
 
                 return RedirectToAction("Index");
-            }
-            catch
-            {
-                return Content("Có lỗi xảy ra. Vui lòng thử lại!");
-            }
+            //}
+            //catch
+            //{
+            //    return Content("Có lỗi xảy ra. Vui lòng thử lại!");
+            //}
         }
         /// <summary>
         /// Giao diện xoá nhân viên
