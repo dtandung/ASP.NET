@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace _19T1021044.Web.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         /// <summary>

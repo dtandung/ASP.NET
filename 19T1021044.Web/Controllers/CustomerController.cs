@@ -9,6 +9,7 @@ using _19T1021044.Web.Models;
 
 namespace _19T1021044.Web.Controllers
 {
+    [Authorize]
     public class CustomerController : Controller
     {
         private const int PAGE_SIZE = 10;//1 giá trị dùng từ 2 lần trở lên nên dùng hằng

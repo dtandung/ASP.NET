@@ -15,34 +15,38 @@
 		</a>
 
 		<div class="navbar-custom-menu">
-			<ul class="nav navbar-nav">			
-				<!-- User Account: style can be found in dropdown.less -->
-				<li class="dropdown user user-menu">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-						<img src="~/Themes/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-						<span class="hidden-xs">Dương Tấn Dũng</span>
-					</a>
-					<ul class="dropdown-menu">
-						<!-- User image -->
-						<li class="user-header">
-							<img src="~/Themes/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+            <ul class="nav navbar-nav">
+                @{
+                    var userAccount = Converter.CookieToUserAccount(User.Identity.Name);
+                }
+                <!-- User Account: style can be found in dropdown.less -->
+                <li class="dropdown user user-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="~/Photos/@userAccount.Photo" class="user-image" alt="User Image">
+                        <span class="hidden-xs">@userAccount.FullName</span>
+                    </a>
 
-							<p>
-								Tấn Dũng - Web Developer
-							</p>
-						</li>						
-						<!-- Menu Footer-->
-						<li class="user-footer">
-							<div class="pull-left">
-								<a href="#" class="btn btn-default btn-flat">Thông Tin</a>
-							</div>
-							<div class="pull-right">
-								<a href="#" class="btn btn-default btn-flat">Đăng Xuất</a>
-							</div>
-						</li>
-					</ul>
-				</li>
-			</ul>
+                    <ul class="dropdown-menu">
+                        <!-- User image -->
+                        <li class="user-header">
+                            <img src="~/Photos/@userAccount.Photo" class="img-circle" alt="User Image">
+
+                            <p>
+                                @userAccount.FullName - Web Developer
+                            </p>
+                        </li>
+                        <!-- Menu Footer-->
+                        <li class="user-footer">
+                            <div class="pull-left">
+                                <a href="#" class="btn btn-default btn-flat">Thông Tin</a>
+                            </div>
+                            <div class="pull-right">
+                                <a href="~/Account/Logout" class="btn btn-default btn-flat">Đăng Xuất</a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
 		</div>
 	</nav>
 </header>

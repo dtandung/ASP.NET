@@ -8,6 +8,7 @@ using _19T1021044.BusinessLayers;
 using _19T1021044.Web.Models;
 namespace _19T1021044.Web.Controllers
 {
+    [Authorize]//đặt trước controller, action đều được
     public class SupplierController : Controller
     {
         private const int PAGE_SIZE = 5;//1 giá trị dùng từ 2 lần trở lên nên dùng hằng
