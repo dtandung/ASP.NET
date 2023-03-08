@@ -41,14 +41,14 @@ namespace _19T1021044.Web.Controllers
             }
             ViewBag.UserName = userName;
             if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(passWord))
-            {              
-                ModelState.AddModelError("","Vui lòng nhập đủ thông tin");
+            {
+                ModelState.AddModelError("", "Vui lòng nhập đủ thông tin");
                 return View();
             }
 
             var userAccount = UserAccountService.Authorize(AccountTypes.Employee, userName, passWord);
 
-            if(userAccount == null)
+            if (userAccount == null)
             {
                 ModelState.AddModelError("", "Đăng nhập thất bại");
                 return View();
@@ -58,6 +58,57 @@ namespace _19T1021044.Web.Controllers
             return RedirectToAction("Index", "Home");
 
         }
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult ChangePassword(string userName, string oldPassword, string newPassword, string confirmNewPassWord)
+        {
+            var model = Converter.CookieToUserAccount(User.Identity.Name);
+            userName = model.Email;
+
+            if (string.IsNullOrWhiteSpace(oldPassword) || string.IsNullOrWhiteSpace(newPassword))
+            {
+                ModelState.AddModelError("", "Vui lòng nhập đủ thông tin");
+                return View();
+            }
+
+            if (oldPassword.Equals(model.Password))
+            {
+                if (newPassword.Equals(confirmNewPassWord))
+                {
+                    UserAccountService.ChangePassword(AccountTypes.Employee, userName, oldPassword, newPassword);
+                    var userAccount = UserAccountService.Authorize(AccountTypes.Employee, userName, newPassword);
+                    string cookieValue = Newtonsoft.Json.JsonConvert.SerializeObject(userAccount);
+                    FormsAuthentication.SetAuthCookie(cookieValue, false);
+                    ModelState.AddModelError("", "Đổi mật Khẩu Thành Công");
+                    return View();
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Mật Khẩu Không Trùng Khớp");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "Mật Khẩu Cũ Không Đúng");
+            }
+
+
+            return View();
+
+
+
+
+            //string cookieValue = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+            //FormsAuthentication.SetAuthCookie(cookieValue, false);
+            //return RedirectToAction("Index", "Home");
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult ChangePassword()
+        {
+            return View();
+        }
+
         public ActionResult Logout()
         {
             Session.Clear();

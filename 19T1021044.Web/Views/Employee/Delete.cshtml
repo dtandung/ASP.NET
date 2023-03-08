@@ -36,13 +36,20 @@
 
             <div class="form-group">
                 <label class="control-label col-sm-2">Ảnh:</label>
-                <img style="margin:0px" class="profile-user-img img-responsive img-bordered" src="@Model.Photo">
+                <img style="margin:0px" class="profile-user-img img-responsive img-bordered" src="~/Photos/@Model.Photo">
             </div>
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i> Đồng ý xoá</button>
-                    <a href="~/Employee" class="btn btn-warning"> Quay Lại</a>
+                    @if (_19T1021044.BusinessLayers.CommonDataService.InUsedEmployee(Model.EmployeeID))
+                    {
+                        <p style="color:red">Nhân viên này không thể xoá</p>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i> Đồng ý xoá</button>
+                    }
+                    <a href="~/Employee" class="btn btn-warning"><i class="fa fa-ban"></i> Quay Lại</a>
                 </div>
             </div>
         </form>

@@ -46,7 +46,7 @@ namespace _19T1021044.Web.Controllers
         public ActionResult Search(PaginationSearchInput condition)
         {
             int rowCount = 0;
-            var data = CommonDataService.ListOfCategorys(condition.Page, condition.PageSize, condition.SearchValue, out rowCount);
+            var data = CommonDataService.ListOfCategories(condition.Page, condition.PageSize, condition.SearchValue, out rowCount);
             var result = new CategorySearchOutput()
             {
                 Page = condition.Page,

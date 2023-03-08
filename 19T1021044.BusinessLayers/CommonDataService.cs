@@ -93,6 +93,10 @@ namespace _19T1021044.BusinessLayers
         /// <returns></returns>
         public static bool DeleteSupplier(int supplierID)
         {
+            if (supplierDB.InUsed(supplierID))
+            {
+                return false;
+            }
             return supplierDB.Delete(supplierID);
         }
         /// <summary>
@@ -162,6 +166,10 @@ namespace _19T1021044.BusinessLayers
         /// <returns></returns>
         public static bool DeleteCustomer(int customerID)
         {
+            if (customerDB.InUsed(customerID))
+            {
+                return false;
+            }
             return customerDB.Delete(customerID);
         }
         /// <summary>
@@ -365,7 +373,7 @@ namespace _19T1021044.BusinessLayers
         /// 
         //public static List<Category> ListOfCategorys() => categoryDB.List().ToList();
 
-        public static List<Category> ListOfCategorys(int page
+        public static List<Category> ListOfCategories(int page
                                                     , int pageSize
                                                     , string searchValue
                                                     , out int rowCount)
@@ -382,7 +390,6 @@ namespace _19T1021044.BusinessLayers
         {
             return categoryDB.Get(categoryID);
         }
-
         /// <summary>
         /// xoá loại hàng
         /// </summary>

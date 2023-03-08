@@ -116,7 +116,9 @@ namespace _19T1021044.Web.Controllers
                 {
                     CommonDataService.UpdateShipper(data);
                 }
-
+                PaginationSearchInput input = Session[SHIPPER_SEARCH] as PaginationSearchInput;
+                input.SearchValue = data.ShipperName;
+                Session[SHIPPER_SEARCH] = input;
                 return RedirectToAction("Index");
             }
             catch

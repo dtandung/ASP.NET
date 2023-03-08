@@ -6,7 +6,7 @@
 <p> Có <b>@string.Format("{0:N0}", Model.RowCount)</b> bản ghi trong tổng số <b>@string.Format("{0:N0}", Model.PageCount)</b> trang</p>
 <table class=" table table-bordered table-hover table-striped">
     <thead>
-        <tr class="bg-success">
+        <tr class="bg-primary">
             <th>
                 Tên Nhà Khách Hàng
             </th>
@@ -41,7 +41,7 @@
                 <td>@item.City</td>
                 <td>@item.PostalCode</td>
                 <td>
-                    <a href="~/Customer/Edit/@item.CustomerID" class="btn-sm btn-warning" title="Sửa"><i class="glyphicon glyphicon-edit"></i></a>
+                    <a href="~/Customer/Edit/@item.CustomerID" class="btn-sm btn-primary" title="Sửa"><i class="glyphicon glyphicon-edit"></i></a>
                     <a href="~/Customer/Delete/@item.CustomerID" class="btn-sm btn-danger" title="Xoá"><i class="glyphicon glyphicon-trash"></i></a>
                 </td>
             </tr>

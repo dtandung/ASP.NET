@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _19T1021044.DomainModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -42,5 +43,17 @@ namespace _19T1021044.Web.Models
                 return p;
             }
         }
+    }
+    public class PaginationProductSearchOutput : PaginationSearchOutput
+    {
+        public int CategoryID { get; set; }
+        public int SupplierID { get; set; }
+        
+    }
+    public class PaginationOrderSearchOutput : PaginationSearchOutput
+    {
+        public int CustomerID { get; set; }
+        public int EmployeeID { get; set; }
+        public int Status { get; set; }
     }
 }

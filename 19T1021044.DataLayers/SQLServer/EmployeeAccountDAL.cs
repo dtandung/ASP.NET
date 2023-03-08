@@ -1,6 +1,7 @@
 ﻿using _19T1021044.DomainModels;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -32,7 +33,7 @@ namespace _19T1021044.DataLayers.SQLServer
             using (SqlConnection connection = OpenConnection())
             {
                 SqlCommand cmd = connection.CreateCommand();
-                cmd.CommandText = @"SELECT EmployeeID, FirstName, LastName, Email, Photo
+                cmd.CommandText = @"SELECT EmployeeID, FirstName, LastName, Email, Photo, Password
                                     FROM Employees
                                     WHERE Email = @Email AND Password = @Password";
                 cmd.CommandType = System.Data.CommandType.Text;
@@ -48,7 +49,7 @@ namespace _19T1021044.DataLayers.SQLServer
                             UserName = Convert.ToString(dbReader["Email"]),
                             FullName = $"{dbReader["LastName"]} {dbReader["FirstName"]}",
                             Email = Convert.ToString(dbReader["Email"]),
-                            Password = "",
+                            Password = Convert.ToString(dbReader["Password"]),
                             RoleNames = "",
                             Photo = Convert.ToString(dbReader["Photo"])
                         };
@@ -69,12 +70,14 @@ namespace _19T1021044.DataLayers.SQLServer
         public bool ChangePassword(string userName, string oldPassword, string newPassword)
         {
             bool result = false;
-            using (var connection = OpenConnection())
+            using (SqlConnection connection = OpenConnection())
             {
-                var cmd = connection.CreateCommand();
+                SqlCommand cmd = new SqlCommand();
                 cmd.CommandText = @"UPDATE Employees 
                                   SET Password = @NewPassword 
                                   WHERE Email = @Email AND Password = @OldPassword";
+                cmd.CommandType = CommandType.Text;
+                cmd.Connection = connection;
                 cmd.Parameters.AddWithValue("@Email", userName);
                 cmd.Parameters.AddWithValue("@NewPassword", newPassword);
                 cmd.Parameters.AddWithValue("@OldPassword", oldPassword);
