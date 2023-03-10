@@ -25,6 +25,7 @@
             <div class="form-group">
                 <label>Địa Chỉ:</label>
                 @Html.TextBoxFor(m => m.Address, new { @class = "form-control", @autofocus = "autofocus" })
+                @Html.ValidationMessageFor(m => m.Address, "", new { @style = "color:#F00" })
             </div>
 
             <div class="form-group">
@@ -38,11 +39,13 @@
             <div class="form-group">
                 <label>Thành Phố:</label>
                 @Html.TextBoxFor(m => m.City, new { @class = "form-control", @autofocus = "autofocus" })
+                @Html.ValidationMessageFor(m => m.City, "", new { @style = "color:#F00" })
             </div>
 
             <div class="form-group">
                 <label>Mã Bưu Chính:</label>
                 @Html.TextBoxFor(m => m.PostalCode, new { @class = "form-control", @autofocus = "autofocus" })
+                @Html.ValidationMessageFor(m => m.PostalCode, "", new { @style = "color:#F00" })
             </div>
             <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-floppy-disk"></i> Lưu Dữ Liệu</button>
             <a href="~/Customer" class="btn btn-warning"><i class="fa fa-ban"></i> Quay Lại</a>

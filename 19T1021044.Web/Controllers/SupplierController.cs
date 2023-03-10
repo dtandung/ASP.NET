@@ -103,11 +103,13 @@ namespace _19T1021044.Web.Controllers
                 if (string.IsNullOrWhiteSpace(data.Country))
                     ModelState.AddModelError("Country", "Vui Lòng Chọn Quốc Gia");
                 if (string.IsNullOrWhiteSpace(data.Address))
-                    data.Address = "";
+                    ModelState.AddModelError("Address", "Địa Chỉ Không Được Để Trống");
                 if (string.IsNullOrWhiteSpace(data.City))
-                    data.City = "";
+                    ModelState.AddModelError("City", "Thành Phố Không Được Để Trống");
                 if (string.IsNullOrWhiteSpace(data.PostalCode))
-                    data.PostalCode = "";
+                    ModelState.AddModelError("PostalCode", "Mã Bưu Chính Không Được Để Trống");
+                if (string.IsNullOrWhiteSpace(data.Phone))
+                    ModelState.AddModelError("Phone", "Số Điện Thoại Không Được Để Trống");
 
                 if (!ModelState.IsValid)
                 {

@@ -39,7 +39,7 @@
             <div class="form-group">
                 <label class="control-label col-sm-2">Thứ tự hiển thị:</label>
                 <div class="col-sm-10">
-                    <input type="number" min="1" class="form-control" name="DisplayOrder" autofocus value="@Model.DisplayOrder">
+                    <input type="number" class="form-control" name="DisplayOrder" autofocus value="@Model.DisplayOrder">
                     @Html.ValidationMessageFor(m => m.DisplayOrder, "", new { @style = "color : red" })
                 </div>
             </div>

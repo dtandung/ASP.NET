@@ -12,7 +12,7 @@ namespace _19T1021044.Web.Controllers
     [Authorize]
     public class EmployeeController : Controller
     {
-        private const int PAGE_SIZE = 5;//1 giá trị dùng từ 2 lần trở lên nên dùng hằng
+        private const int PAGE_SIZE = 3;//1 giá trị dùng từ 2 lần trở lên nên dùng hằng
         private const string EMPLOYEE_SEARCH = "SearchEmployeeCondition";
         /// <summary>
         /// 
@@ -94,8 +94,8 @@ namespace _19T1021044.Web.Controllers
         public ActionResult Save(Employee data, string birthday, HttpPostedFileBase UploadPhoto)//Employee data
         {
 
-            //try
-            //{
+            try
+            {
                 DateTime? d = Converter.DMYStringToDateTime(birthday);
                 if (d == null)
                     ModelState.AddModelError("BirthDate", $"Ngày Sinh {birthday} Chưa Đúng Định Dạng");
@@ -110,7 +110,7 @@ namespace _19T1021044.Web.Controllers
                         ModelState.AddModelError("BirthDate", "Ngày Sinh Chưa Đúng Định Dạng");
                     }
                 }
-                    
+
 
 
                 if (string.IsNullOrWhiteSpace(data.LastName))
@@ -120,24 +120,32 @@ namespace _19T1021044.Web.Controllers
                 if (string.IsNullOrWhiteSpace(data.Email))
                     ModelState.AddModelError("Email", "Email Không Được Để Trống");
                 if (string.IsNullOrWhiteSpace(data.Notes))
-                    data.Notes = "";
-                if (string.IsNullOrWhiteSpace(data.Photo))
-                    data.Photo = "";
+                    ModelState.AddModelError("Notes","Ghi Chú Không Được Để Trống");
+               
 
-                if (!ModelState.IsValid)
-                {
-                    ViewBag.Title = data.EmployeeID == 0 ? "Bổ sung nhân viên" : "Cập nhật nhân viên";
-                    return View("Edit", data);
-                }
+                
 
 
-                if(UploadPhoto != null)
+                if (UploadPhoto != null)
                 {
                     string path = Server.MapPath("~/Photos"); //mappath: lấy đường dẫn vật lí
                     string fileName = $"{DateTime.Now.Ticks}_{UploadPhoto.FileName}";
                     string filePath = System.IO.Path.Combine(path, fileName);//cộng chuỗi
                     UploadPhoto.SaveAs(filePath);
-                    data.Photo = fileName;
+                    data.Photo = $"/Photos/{fileName}";
+                }
+                else
+                {
+                    if(data.EmployeeID != 0)
+                        data.Photo = CommonDataService.GetEmployee(data.EmployeeID).Photo;
+                    else if(string.IsNullOrWhiteSpace(data.Photo))
+                        ModelState.AddModelError("Photo", "Vui Lòng Chọn Ảnh Hiển Thị");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.Title = data.EmployeeID == 0 ? "Bổ sung nhân viên" : "Cập nhật nhân viên";
+                    return View("Edit", data);
                 }
 
                 if (data.EmployeeID == 0)
@@ -146,15 +154,16 @@ namespace _19T1021044.Web.Controllers
                 }
                 else
                 {
+                    
                     CommonDataService.UpdateEmployee(data);
                 }
 
                 return RedirectToAction("Index");
-            //}
-            //catch
-            //{
-            //    return Content("Có lỗi xảy ra. Vui lòng thử lại!");
-            //}
+            }
+            catch
+            {
+                return Content("Có lỗi xảy ra. Vui lòng thử lại!");
+            }
         }
         /// <summary>
         /// Giao diện xoá nhân viên

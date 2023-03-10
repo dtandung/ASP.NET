@@ -93,10 +93,16 @@ namespace _19T1021044.Web.Controllers
         {
             if (orderID == 0 || productID == 0)
                 return RedirectToAction("Details");
-            var data = OrderService.GetOrderDetail(orderID, productID);
-            if (data == null)
-                return RedirectToAction($"Details/{orderID}");
-            return View(data);
+            var userAccount = Converter.CookieToUserAccount(User.Identity.Name);
+            var getOrder = OrderService.GetOrder(orderID);
+            if (userAccount.UserId.Equals(getOrder.EmployeeID.ToString()))
+            {
+                var data = OrderService.GetOrderDetail(orderID, productID);
+                if (data == null)
+                    return RedirectToAction($"Details/{orderID}");
+                return View(data);
+            }
+            return RedirectToAction($"Details/{orderID}");
         }
         /// <summary>
         /// Thay đổi thông tin chi tiết đơn hàng
@@ -107,12 +113,12 @@ namespace _19T1021044.Web.Controllers
         [HttpPost]
         public string UpdateDetail(OrderDetail data)
         {
-            if (data.Quantity == 0)
-                return "Số lượng không được để trống";
-            if (data.SalePrice == 0)
-                return "Giá bán không được để trống";
+            if (data.Quantity <= 0)
+                return "Số lượng không hợp lệ";
+            if (data.SalePrice <= 0)
+                return "Giá bán không hợp lệ";
 
-            
+
             OrderService.SaveOrderDetail(data.OrderID, data.ProductID, data.Quantity, data.SalePrice);
 
             return "";
@@ -130,8 +136,11 @@ namespace _19T1021044.Web.Controllers
                 return RedirectToAction("Details");
             var userAccount = Converter.CookieToUserAccount(User.Identity.Name);
             var getOrder = OrderService.GetOrder(orderID);
-            if (userAccount.UserId.Equals(getOrder.EmployeeID))
+            if (userAccount.UserId.Equals(getOrder.EmployeeID.ToString()))
                 OrderService.DeleteOrderDetail(orderID, productID);
+            var list = OrderService.ListOrderDetails(orderID);
+            if (list.ToArray().Length == 0)
+                OrderService.CancelOrder(orderID);
             return RedirectToAction($"Details/{orderID}");
         }
         /// <summary>
@@ -171,13 +180,13 @@ namespace _19T1021044.Web.Controllers
         /// <returns></returns>
         public ActionResult Shipping(int id = 0, int shipperID = 0)
         {
-            
+
             if (Request.HttpMethod == "GET")
             {
                 ViewBag.OrderID = id;
                 return View();
-            }    
-            if(shipperID == 0)
+            }
+            if (shipperID == 0)
             {
                 return Json(ApiResult.CreateFailResult("Vui lòng chọn người giao hàng"), JsonRequestBehavior.AllowGet);
             }
@@ -187,7 +196,7 @@ namespace _19T1021044.Web.Controllers
                 return Json(ApiResult.CreateFailResult("Chuyển giao đơn hàng thất bại"), JsonRequestBehavior.AllowGet);
             }
             return Json(ApiResult.CreateSuccessResult(""));
-            
+
         }
         /// <summary>
         /// Ghi nhận hoàn tất thành công đơn hàng

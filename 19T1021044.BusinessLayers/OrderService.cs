@@ -173,7 +173,7 @@ namespace _19T1021044.BusinessLayers
             var data = orderDB.Get(orderID);
             if (data == null)
                 return false;
-            
+
             if (data.Status == OrderStatus.INIT || data.Status == OrderStatus.CANCEL || data.Status == OrderStatus.REJECTED)
                 return orderDB.Delete(orderID);
 
@@ -211,7 +211,12 @@ namespace _19T1021044.BusinessLayers
         /// <returns></returns>
         public static int SaveOrderDetail(int orderID, int productID, int quantity, decimal salePrice)
         {
-            return orderDB.SaveDetail(orderID, productID, quantity, salePrice);
+            var data = orderDB.Get(orderID);
+            if (data == null)
+                return 0;
+            if (data.Status == OrderStatus.INIT || data.Status == OrderStatus.ACCEPTED)
+                return orderDB.SaveDetail(orderID, productID, quantity, salePrice);
+            return 0;
         }
         /// <summary>
         /// Xóa 1 chi tiết trong đơn hàng
@@ -221,7 +226,13 @@ namespace _19T1021044.BusinessLayers
         /// <returns></returns>
         public static bool DeleteOrderDetail(int orderID, int productID)
         {
-            return orderDB.DeleteDetail(orderID, productID);
+            //TODO: Lấy đơn hàng có mã orderID, kiểm tra xem có cho xoá chi tiết hay không?
+            var data = orderDB.Get(orderID);
+            if (data == null)
+                return false;
+            if (data.Status == OrderStatus.INIT || data.Status == OrderStatus.ACCEPTED)
+                return orderDB.DeleteDetail(orderID, productID);
+            return false;
         }
     }
 }

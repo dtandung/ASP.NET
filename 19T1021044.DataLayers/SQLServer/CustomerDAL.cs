@@ -150,7 +150,7 @@ namespace _19T1021044.DataLayers.SQLServer
             {
                 SqlCommand cmd = new SqlCommand();
                 cmd.CommandText = @"SELECT CASE 
-                                                WHEN EXISTS(SELECT * FROM Customers WHERE CustomerID = @CustomerID) THEN 1 
+                                                WHEN EXISTS(SELECT * FROM Orders WHERE CustomerID = @CustomerID) THEN 1 
                                                 ELSE 0 
                                             END";
                 cmd.CommandType = CommandType.Text;
