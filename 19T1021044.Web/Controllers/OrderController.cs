@@ -186,6 +186,17 @@ namespace _19T1021044.Web.Controllers
                 ViewBag.OrderID = id;
                 return View();
             }
+            int checkShipper = 0;
+            foreach(var item in CommonDataService.ListOfShipper(""))
+            {
+                if (item.ShipperID == shipperID)
+                    checkShipper = 1;
+            }
+            if (checkShipper == 0)
+            {
+                return Json(ApiResult.CreateFailResult("Người Giao Hàng Không Hợp Lệ"), JsonRequestBehavior.AllowGet);
+            }
+
             if (shipperID == 0)
             {
                 return Json(ApiResult.CreateFailResult("Vui lòng chọn người giao hàng"), JsonRequestBehavior.AllowGet);

@@ -1,5 +1,0 @@
-D:\learn\Lap trinh web\LTWN2\19T1021044\19T1021044.DomainModels\bin\Debug\19T1021044.DomainModels.dll
-D:\learn\Lap trinh web\LTWN2\19T1021044\19T1021044.DomainModels\bin\Debug\19T1021044.DomainModels.pdb
-D:\learn\Lap trinh web\LTWN2\19T1021044\19T1021044.DomainModels\obj\Debug\19T1021044.DomainModels.csproj.CoreCompileInputs.cache
-D:\learn\Lap trinh web\LTWN2\19T1021044\19T1021044.DomainModels\obj\Debug\19T1021044.DomainModels.dll
-D:\learn\Lap trinh web\LTWN2\19T1021044\19T1021044.DomainModels\obj\Debug\19T1021044.DomainModels.pdb
